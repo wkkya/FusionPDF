@@ -2,7 +2,29 @@
 <idea-plugin>
     <id>com.github.wkkya.fusionpdf</id>
     <name>FusionPDF</name>
+
+    <!--  版本  -->
+    <version>1.0.0</version>
+
     <vendor>wkkya</vendor>
+
+    <!--  支持的idea版本  -->
+    <idea-version since-build="211.1" until-build="223.*"/>
+
+    <description>
+        <![CDATA[
+            <p>初始化版本</p>
+            <p>初始化版本</p>
+            <p>初始化版本</p>
+            <p>初始化版本</p>
+            <p>初始化版本</p>
+            <p>初始化版本</p>
+            <p>初始化版本</p>
+          ]]>
+    </description>
+
+    <!--  更新日志  -->
+    <change-notes>初始化版本</change-notes>
 
     <depends>com.intellij.modules.platform</depends>
 
