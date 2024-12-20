@@ -13,13 +13,13 @@
 
     <description>
         <![CDATA[
-            <p>初始化版本</p>
-            <p>初始化版本</p>
-            <p>初始化版本</p>
-            <p>初始化版本</p>
-            <p>初始化版本</p>
-            <p>初始化版本</p>
-            <p>初始化版本</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
           ]]>
     </description>
 
@@ -37,4 +37,10 @@
     <applicationListeners>
         <listener class="com.github.wkkya.fusionpdf.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
+    <actions>
+        <action id="FusionPDF_id" class="com.github.wkkya.fusionpdf.FusionPDF" text="FusionPDF"
+                description="Fusion PDF">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
 </idea-plugin>
