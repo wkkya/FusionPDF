@@ -133,6 +133,15 @@ tasks {
     publishPlugin {
         dependsOn(patchChangelog)
     }
+
+    withType<JavaCompile>{
+        // 解决编译时中文报错
+        options.encoding = "UTF-8"
+    }
+    // 添加以下内容，解决运行时控制台中文乱码
+    withType<JavaExec> {
+        jvmArgs = listOf("-Dfile.encoding=UTF-8", "-Dsun.stdout.encoding=UTF-8", "-Dsun.stderr.encoding=UTF-8")
+    }
 }
 
 intellijPlatformTesting {
