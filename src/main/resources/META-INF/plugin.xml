@@ -32,6 +32,14 @@
 
     <extensions defaultExtensionNs="com.intellij">
 <!--        <toolWindow factoryClass="com.github.wkkya.fusionpdf.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>-->
+
+        <!-- 配置 File -> Settings -> Tools -->
+        <projectConfigurable groupId="tools" displayName="FusionPDF" id="fusionpdf"
+                             instance="com.github.wkkya.fusionpdf.factory.SettingFactory"/>
+
+        <!-- 窗体 (IDEA 界面右侧) -->
+        <toolWindow id="FusionPDF" secondary="false" anchor="right" icon="/icons/logo.png"
+                    factoryClass="com.github.wkkya.fusionpdf.factory.ReadFactory"/>
     </extensions>
 
     <applicationListeners>
