@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
@@ -47,27 +48,40 @@ public class SettingFactory implements SearchableConfigurable {
     @Override
     public void apply() throws ConfigurationException {
 
-        String url = settingUI.getUrlTextField().getText();
-        // 设置文本信息
-        try {
-            File file = new File(url);
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r");
-            randomAccessFile.seek(0);
+        String url = settingUI.getSelectedFilePath(); // 使用新的方法获取文件路径
 
-            byte[] bytes = new byte[1024 * 1024];
-            int readSize = randomAccessFile.read(bytes);
-
-            byte[] copy = new byte[readSize];
-            System.arraycopy(bytes, 0, copy, 0, readSize);
-
-            String str = new String(copy, StandardCharsets.UTF_8);
-
-            // 设置内容
-            Config.readUI.getTextContent().setText(str);
-
-        } catch (Exception ignore) {
-            log.error("读取文件失败", ignore);
+        if (url == null || url.isEmpty()) {
+            throw new ConfigurationException("文件路径不能为空！");
         }
+
+        File file = new File(url);
+        if (!file.exists()) {
+            throw new ConfigurationException("文件不存在，请检查路径！");
+        }
+
+        try {
+            // 检测是否为 PDF 文件
+            if (url.toLowerCase().endsWith(".pdf")) {
+                Config.readUI.loadPDF(url); // 加载 PDF 文件
+            } else {
+                // 加载普通文本文件
+                throw new ConfigurationException("请选择pdf文件");
+            }
+
+            // 应用背景色和字体色
+            Color bgColor = settingUI.getSelectedBackgroundColor(); // 从 SettingUI 获取
+            Color fontColor = settingUI.getSelectedFontColor();
+
+            Config.readUI.setBackgroundColor(bgColor);
+            Config.readUI.setTextColor(fontColor);
+
+            JOptionPane.showMessageDialog(null, "设置成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            log.error("文件加载失败", e);
+            throw new ConfigurationException("文件加载失败，请检查文件内容或格式是否为PDF！");
+        }
+
+
 
     }
 }

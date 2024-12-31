@@ -1,0 +1,49 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.github.wkkya.fusionpdf</id>
+    <name>FusionPDF</name>
+
+    <!--  版本  -->
+    <version>1.0.0</version>
+
+    <vendor>wkkya</vendor>
+
+    <!--  支持的idea版本  -->
+    <idea-version since-build="211.1" until-build="223.*"/>
+
+    <description>
+        <![CDATA[
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+            <p>融合PDF</p>
+          ]]>
+    </description>
+
+    <!--  更新日志  -->
+    <change-notes>初始化版本</change-notes>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <resource-bundle>messages.MyBundle</resource-bundle>
+
+    <extensions defaultExtensionNs="com.intellij">
+<!--        <toolWindow factoryClass="com.github.wkkya.fusionpdf.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>-->
+
+        <!-- 配置 File -> Settings -> Tools -->
+        <projectConfigurable groupId="tools" displayName="FusionPDF" id="fusionpdf"
+                             instance="com.github.wkkya.fusionpdf.factory.SettingFactory"/>
+
+        <!-- 窗体 (IDEA 界面右侧) -->
+        <toolWindow id="FusionPDF" secondary="false" anchor="right" icon="/icons/logo.png"
+                    factoryClass="com.github.wkkya.fusionpdf.factory.ReadFactory"/>
+    </extensions>
+
+    <applicationListeners>
+<!--        <listener class="com.github.wkkya.fusionpdf.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>-->
+    </applicationListeners>
+
+</idea-plugin>

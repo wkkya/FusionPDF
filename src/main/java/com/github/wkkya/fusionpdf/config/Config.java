@@ -4,6 +4,6 @@ import com.github.wkkya.fusionpdf.ui.read.ReadUI;
 
 public class Config {
 
-    public static ReadUI readUI = null;
+    public static ReadUI readUI = new ReadUI();
 
 }
