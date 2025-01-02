@@ -1,6 +1,6 @@
 package com.github.wkkya.fusionpdf.ui.read;
 
-import com.github.wkkya.fusionpdf.module.ReadUIState;
+//import com.github.wkkya.fusionpdf.module.ReadUIState;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -50,10 +50,10 @@ public class ReadUI  {
         setupListeners();
 
         // 读取上次保存的页面位置
-        ReadUIState state = ServiceManager.getService(ReadUIState.class);
-        if (state != null) {
-            currentPage = state.getLastPage();
-        }
+//        ReadUIState state = ServiceManager.getService(ReadUIState.class);
+//        if (state != null) {
+//            currentPage = state.getLastPage();
+//        }
     }
 
     public JComponent getComponent() {
@@ -309,12 +309,12 @@ public class ReadUI  {
     /**
      * 存储当前页面
      */
-    private void saveCurrentPage() {
-        ReadUIState state = ServiceManager.getService(ReadUIState.class);
-        if (state != null) {
-            state.setLastPage(currentPage);
-        }
-    }
+//    private void saveCurrentPage() {
+//        ReadUIState state = ServiceManager.getService(ReadUIState.class);
+//        if (state != null) {
+//            state.setLastPage(currentPage);
+//        }
+//    }
 
     public void closePDF() {
         try {
@@ -322,7 +322,7 @@ public class ReadUI  {
                 pdfDocument.close();
                 pdfDocument = null;
                 pdfRenderer = null;
-                saveCurrentPage(); // 保存当前页面位置
+//                saveCurrentPage(); // 保存当前页面位置
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(mainPanel, "关闭 PDF 文件失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
