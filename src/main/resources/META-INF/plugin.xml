@@ -8,8 +8,10 @@
 
     <vendor>wkkya</vendor>
 
-    <!--  支持的idea版本  -->
-    <idea-version since-build="211.1" until-build="223.*"/>
+    <!-- 支持的 IDEA 版本 -->
+    <idea-version since-build="232.1" until-build="999.0" />
+
+
 
     <description>
         <![CDATA[
