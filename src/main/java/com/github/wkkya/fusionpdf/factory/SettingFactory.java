@@ -72,7 +72,7 @@ public class SettingFactory implements SearchableConfigurable {
             Config.readUI.setBackgroundColor(bgColor);
             Config.readUI.setTextColor(fontColor);
 
-            JOptionPane.showMessageDialog(null, "设置成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
+//            JOptionPane.showMessageDialog(null, "设置成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             log.error("文件加载失败", e);
             JOptionPane.showMessageDialog(null, "设置成功！", "提示", JOptionPane.ERROR_MESSAGE);

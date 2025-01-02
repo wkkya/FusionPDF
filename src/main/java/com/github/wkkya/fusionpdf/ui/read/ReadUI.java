@@ -1,5 +1,7 @@
 package com.github.wkkya.fusionpdf.ui.read;
 
+import com.github.wkkya.fusionpdf.module.ReadUIState;
+import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.ui.Messages;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -8,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class ReadUI {
+public class ReadUI  {
     private JPanel mainPanel;
     private JLabel pdfViewer;
     private JScrollPane pdfScrollPane;
@@ -24,8 +28,7 @@ public class ReadUI {
     private JButton prevButton;
     private JButton nextButton;
     private JTextField pageField;
-//    private JButton enlargeButton;
-//    private JButton zoomOutButton;
+
 
     private JLabel zoomInLabel;
     private JLabel zoomOutLabel;
@@ -38,7 +41,6 @@ public class ReadUI {
     private Color textColor = Color.WHITE; // 默认文字颜色
 
     private final ExecutorService renderExecutor = Executors.newSingleThreadExecutor(); // 渲染线程池
-    private final ExecutorService cacheExecutor = Executors.newSingleThreadExecutor();
 
     // 缓存已渲染的页面：避免页面重复渲染
     public final Map<Integer, BufferedImage> pageCache = new HashMap<>();
@@ -46,6 +48,12 @@ public class ReadUI {
     public ReadUI() {
         setupUI();
         setupListeners();
+
+        // 读取上次保存的页面位置
+        ReadUIState state = ServiceManager.getService(ReadUIState.class);
+        if (state != null) {
+            currentPage = state.getLastPage();
+        }
     }
 
     public JComponent getComponent() {
@@ -66,39 +74,7 @@ public class ReadUI {
         }
     }
 
-    //测试：异步渲染
-    private void renderPageAsync(int pageIndex) {
-        SwingWorker<BufferedImage, Void> worker = new SwingWorker<>() {
-            @Override
-            protected BufferedImage doInBackground() throws Exception {
-                BufferedImage cachedImage = getPageFromCache(currentPage, scale);
-                return processPDFImage(cachedImage);
-            }
-
-            @Override
-            protected void done() {
-                try {
-                    BufferedImage result = get();
-                    // 缩放至窗口大小（如果需要）
-                    BufferedImage scaledImage = scaleImage(result, pdfScrollPane.getWidth(), pdfScrollPane.getHeight());
-
-                    // 显示优化后的图像
-                    pdfViewer.setIcon(new ImageIcon(scaledImage));
-                    pageField.setText((currentPage + 1) + " / " + pdfDocument.getNumberOfPages());
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(mainPanel, "异步渲染失败：" + e.getMessage());
-                }
-            }
-        };
-        worker.execute();
-    }
-
-
     private void renderPage() {
-//        cacheExecutor.submit(() -> {
-//            //预加载前后页面
-//            preloadPages(currentPage, 6);
-//        });
 
         renderExecutor.submit(() -> {
             if (pdfDocument == null || pdfRenderer == null) {
@@ -113,7 +89,6 @@ public class ReadUI {
 
                 // 缩放至窗口大小
                 BufferedImage scaledImage = quickScaleImage(processedImage, scale);
-//            BufferedImage scaledImage = scaleImage(processedImage, pdfScrollPane.getWidth(), pdfScrollPane.getHeight());
 
                 // 显示优化后的图像
                 pdfViewer.setIcon(new ImageIcon(scaledImage));
@@ -156,26 +131,6 @@ public class ReadUI {
         g2d.dispose();
         return result;
     }
-
-
-    /**
-     * 预加载页面
-     * @param centerPage
-     * @param range
-     */
-    private void preloadPages(int centerPage, int range) {
-        for (int i = Math.max(0, centerPage - range); i <= Math.min(pdfDocument.getNumberOfPages() - 1, centerPage + range); i++) {
-            try {
-                int cacheKey = (int) (i + scale * 100); // 生成唯一缓存键
-//                getPageFromCache(i, scale);
-                doCache(cacheKey);
-            } catch (IOException ignored) {
-            }
-        }
-    }
-
-
-
 
     /**
      * 缓存中获取已渲染对象
@@ -253,7 +208,6 @@ public class ReadUI {
 
     private void setupUI() {
 
-
         mainPanel = new JPanel(new BorderLayout());
         pdfViewer = new JLabel();
         pdfScrollPane = new JScrollPane(pdfViewer);
@@ -283,17 +237,6 @@ public class ReadUI {
         JScrollBar verticalScrollBar = pdfScrollPane.getVerticalScrollBar();
         verticalScrollBar.setUnitIncrement(20); // 设置为 20，增加滚动速度
 
-        // 加载放大和缩小图标
-//        ImageIcon zoomInIcon = new ImageIcon(getClass().getResource("/icons/zoom_in.png"));
-//        ImageIcon zoomOutIcon = new ImageIcon(getClass().getResource("/icons/zoom_out.png"));
-
-//        ImageIcon zoomInIcon = new ImageIcon(getClass().getResource("/icons/zoom_in.png"));
-//        Image zoomInImage = zoomInIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH); // 调整图标大小
-//        zoomInIcon = new ImageIcon(zoomInImage);
-
-//        enlargeButton.setIcon(zoomInIcon);
-//        zoomOutButton.setIcon(zoomOutIcon);
-
         controlPanel.add(prevButton);
         controlPanel.add(pageField);
         controlPanel.add(nextButton);
@@ -309,9 +252,6 @@ public class ReadUI {
     private void setupListeners() {
         prevButton.addActionListener(e -> navigatePage(-1));
         nextButton.addActionListener(e -> navigatePage(1));
-//        enlargeButton.addActionListener(e -> adjustScale(0.2f));
-//        zoomOutButton.addActionListener(e -> adjustScale(-0.2f));
-
         // 为图标添加点击事件
         zoomInLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -366,14 +306,28 @@ public class ReadUI {
         renderPage(); // 重新渲染当前页面
     }
 
+    /**
+     * 存储当前页面
+     */
+    private void saveCurrentPage() {
+        ReadUIState state = ServiceManager.getService(ReadUIState.class);
+        if (state != null) {
+            state.setLastPage(currentPage);
+        }
+    }
+
     public void closePDF() {
         try {
             if (pdfDocument != null) {
                 pdfDocument.close();
+                pdfDocument = null;
+                pdfRenderer = null;
+                saveCurrentPage(); // 保存当前页面位置
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(mainPanel, "关闭 PDF 文件失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 }
 

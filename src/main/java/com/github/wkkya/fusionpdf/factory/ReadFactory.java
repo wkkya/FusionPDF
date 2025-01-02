@@ -1,8 +1,11 @@
 package com.github.wkkya.fusionpdf.factory;
 
 import com.github.wkkya.fusionpdf.config.Config;
+import com.github.wkkya.fusionpdf.listener.ReadUIListener;
 import com.github.wkkya.fusionpdf.ui.read.ReadUI;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.project.ProjectManagerListener;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
@@ -24,5 +27,13 @@ public class ReadFactory  implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(content);
         // 全局使用
         Config.readUI = readUI;
+        //注册监听器
+//        registerProjectCloseListener(project, readUI);
+    }
+
+
+    private void registerProjectCloseListener(Project project, ReadUI readUI) {
+        ProjectManager projectManager = ProjectManager.getInstance();
+        projectManager.addProjectManagerListener(new ReadUIListener(project, readUI));
     }
 }
