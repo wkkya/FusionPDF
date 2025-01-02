@@ -15,28 +15,8 @@
 
     <description>
         <![CDATA[
-            FusionPDF integrates PDF viewing seamlessly into IntelliJ IDEA, matching your current theme and providing customization options for background and text colors. It supports zooming and scanned image PDFs, enhancing your productivity and reading experience.
+            FusionPDF integrates PDF viewing into IntelliJ IDEA, matching themes and providing customization options for background and text colors. It supports zooming and scanned image PDFs, enhancing productivity and reading experience.
         ]]>
-<!--            <h2>FusionPDF - 将 PDF 完美融入您的开发环境</h2>-->
-
-<!--            <p><strong>FusionPDF</strong> 是一款专为开发者设计的 PDF 查看工具，它能够将 PDF 文件完美地融合到您当前的 IntelliJ IDEA 主题中，提供沉浸式的阅读体验。</p>-->
-
-<!--            <h3>主要功能：</h3>-->
-<!--            <ul>-->
-<!--                <li><strong>主题适配：</strong>自动匹配当前 IDE 主题，确保 PDF 阅读界面与开发环境无缝衔接。</li>-->
-<!--                <li><strong>自定义调整：</strong>支持用户自定义背景色和字体颜色，满足个性化需求。</li>-->
-<!--                <li><strong>缩放功能：</strong>轻松放大或缩小 PDF 内容，方便查看细节或概览。</li>-->
-<!--                <li><strong>图片扫描版支持：</strong>完美支持图片扫描版 PDF 文件，确保所有类型的 PDF 文档都能流畅阅读。</li>-->
-<!--            </ul>-->
-
-<!--            <h3>隐藏功能（悄悄告诉你）：</h3>-->
-<!--            <ul>-->
-<!--                <li><em>高效休息：</em>在紧张的编码间隙，您可以使用 FusionPDF 浏览文档、书籍或任何喜欢的内容，享受片刻宁静（通常我们把这叫做“摸鱼”）。</li>-->
-<!--                <li><em>灵感源泉：</em>当遇到编程瓶颈时，翻阅 PDF 中的技术文章或教程，或许能激发新的思路。</li>-->
-<!--                <li><em>专注提升：</em>通过自定义背景色和字体颜色，创建一个让您更舒适的阅读环境，有助于提高工作效率。</li>-->
-<!--            </ul>-->
-
-<!--            <p>无论是深入学习新技术，还是在忙碌的工作中寻找一丝放松，FusionPDF 都是您不可或缺的得力助手。快来试试吧！</p>-->
     </description>
 
 
