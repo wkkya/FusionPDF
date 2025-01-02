@@ -13,13 +13,14 @@
 
 
 
-    <description>
-        <![CDATA[FusionPDF integrates PDF viewing into IntelliJ IDEA, matching themes and providing customization options for background and text colors. It supports zooming and scanned image PDFs, enhancing productivity and reading experience.]]>
-    </description>
+    <description><![CDATA[
+FusionPDF integrates PDF viewing into IntelliJ IDEA. It supports theme matching, customization options for background/text colors, zooming, and scanned image PDFs, enhancing productivity and reading experience.
+]]></description>
+
 
 
     <!--  更新日志  -->
-    <change-notes>初始化版本</change-notes>
+    <change-notes>init</change-notes>
 
     <depends>com.intellij.modules.platform</depends>
 
