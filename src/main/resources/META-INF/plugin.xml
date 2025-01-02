@@ -34,7 +34,7 @@
 <!--        <toolWindow factoryClass="com.github.wkkya.fusionpdf.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>-->
 
         <!-- 配置 File -> Settings -> Tools -->
-        <projectConfigurable groupId="tools" displayName="FusionPDF" id="fusionpdf"
+        <projectConfigurable groupId="other" displayName="FusionPDF" id="fusionpdf"
                              instance="com.github.wkkya.fusionpdf.factory.SettingFactory"/>
 
         <!-- 窗体 (IDEA 界面右侧) -->
