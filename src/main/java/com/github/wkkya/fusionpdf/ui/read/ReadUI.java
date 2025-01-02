@@ -6,6 +6,8 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +24,11 @@ public class ReadUI {
     private JButton prevButton;
     private JButton nextButton;
     private JTextField pageField;
-    private JButton enlargeButton;
-    private JButton zoomOutButton;
+//    private JButton enlargeButton;
+//    private JButton zoomOutButton;
+
+    private JLabel zoomInLabel;
+    private JLabel zoomOutLabel;
 
     private PDDocument pdfDocument;
     private PDFRenderer pdfRenderer;
@@ -256,6 +261,21 @@ public class ReadUI {
 
         prevButton = new JButton("上一页");
         nextButton = new JButton("下一页");
+
+        // 创建放大图标
+        ImageIcon zoomInIcon = new ImageIcon(getClass().getResource("/icons/zoom_in.png"));
+        Image zoomInImage = zoomInIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH); // 调整图标大小
+        zoomInIcon = new ImageIcon(zoomInImage);
+        zoomInLabel = new JLabel(zoomInIcon);
+        zoomInLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 鼠标指针变为手型
+
+        // 创建缩小图标
+        ImageIcon zoomOutIcon = new ImageIcon(getClass().getResource("/icons/zoom_out.png"));
+        Image zoomOutImage = zoomOutIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH); // 调整图标大小
+        zoomOutIcon = new ImageIcon(zoomOutImage);
+        zoomOutLabel = new JLabel(zoomOutIcon);
+        zoomOutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 鼠标指针变为手型
+
         pageField = new JTextField(5);
         pageField.setEditable(false);
 
@@ -264,21 +284,21 @@ public class ReadUI {
         verticalScrollBar.setUnitIncrement(20); // 设置为 20，增加滚动速度
 
         // 加载放大和缩小图标
-        ImageIcon zoomInIcon = new ImageIcon(getClass().getResource("/icons/zoom_in.png"));
-        ImageIcon zoomOutIcon = new ImageIcon(getClass().getResource("/icons/zoom_out.png"));
+//        ImageIcon zoomInIcon = new ImageIcon(getClass().getResource("/icons/zoom_in.png"));
+//        ImageIcon zoomOutIcon = new ImageIcon(getClass().getResource("/icons/zoom_out.png"));
 
 //        ImageIcon zoomInIcon = new ImageIcon(getClass().getResource("/icons/zoom_in.png"));
 //        Image zoomInImage = zoomInIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH); // 调整图标大小
 //        zoomInIcon = new ImageIcon(zoomInImage);
 
-        enlargeButton.setIcon(zoomInIcon);
-        zoomOutButton.setIcon(zoomOutIcon);
+//        enlargeButton.setIcon(zoomInIcon);
+//        zoomOutButton.setIcon(zoomOutIcon);
 
         controlPanel.add(prevButton);
         controlPanel.add(pageField);
         controlPanel.add(nextButton);
-        controlPanel.add(enlargeButton);
-        controlPanel.add(zoomOutButton);
+        controlPanel.add(zoomInLabel);
+        controlPanel.add(zoomOutLabel);
 
         mainPanel.add(pdfScrollPane, BorderLayout.CENTER);
         mainPanel.add(controlPanel, BorderLayout.SOUTH);
@@ -289,8 +309,39 @@ public class ReadUI {
     private void setupListeners() {
         prevButton.addActionListener(e -> navigatePage(-1));
         nextButton.addActionListener(e -> navigatePage(1));
-        enlargeButton.addActionListener(e -> adjustScale(0.2f));
-        zoomOutButton.addActionListener(e -> adjustScale(-0.2f));
+//        enlargeButton.addActionListener(e -> adjustScale(0.2f));
+//        zoomOutButton.addActionListener(e -> adjustScale(-0.2f));
+
+        // 为图标添加点击事件
+        zoomInLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                zoomIn();
+            }
+        });
+
+        zoomOutLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                zoomOut();
+            }
+        });
+
+
+    }
+
+    // 放大功能
+    private void zoomIn() {
+        scale += 0.1f; // 增加缩放比例
+        renderPage();
+    }
+
+    // 缩小功能
+    private void zoomOut() {
+        if (scale > 0.2f) { // 限制最小缩放比例
+            scale -= 0.1f;
+        }
+        renderPage();
     }
 
     private void navigatePage(int delta) {
