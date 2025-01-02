@@ -2,6 +2,7 @@ package com.github.wkkya.fusionpdf.factory;
 
 import com.github.wkkya.fusionpdf.config.Config;
 import com.github.wkkya.fusionpdf.ui.read.ReadUI;
+import com.github.wkkya.fusionpdf.ui.read.ReadUITest;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
