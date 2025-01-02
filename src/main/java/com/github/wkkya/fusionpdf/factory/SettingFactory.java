@@ -4,7 +4,6 @@ import com.github.wkkya.fusionpdf.config.Config;
 import com.github.wkkya.fusionpdf.ui.setting.SettingUI;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
-import com.intellij.openapi.util.NlsContexts;
 import groovy.util.logging.Slf4j;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
@@ -16,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.RandomAccessFile;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class SettingFactory implements SearchableConfigurable {
@@ -78,7 +75,8 @@ public class SettingFactory implements SearchableConfigurable {
             JOptionPane.showMessageDialog(null, "设置成功！", "提示", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             log.error("文件加载失败", e);
-            throw new ConfigurationException("文件加载失败，请检查文件内容或格式是否为PDF！");
+            JOptionPane.showMessageDialog(null, "设置成功！", "提示", JOptionPane.ERROR_MESSAGE);
+//            throw new ConfigurationException("文件加载失败，请检查文件内容或格式是否为PDF！");
         }
 
 

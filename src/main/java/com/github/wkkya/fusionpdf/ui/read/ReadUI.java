@@ -41,7 +41,7 @@ public class ReadUI {
     private final ExecutorService cacheExecutor = Executors.newSingleThreadExecutor();
 
     // 缓存已渲染的页面：避免页面重复渲染
-    private final Map<Integer, BufferedImage> pageCache = new HashMap<>();
+    public final Map<Integer, BufferedImage> pageCache = new HashMap<>();
 
     public ReadUI() {
         setupUI();
