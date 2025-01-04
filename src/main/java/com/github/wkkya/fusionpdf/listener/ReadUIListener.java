@@ -23,9 +23,6 @@ public class ReadUIListener implements VetoableProjectManagerListener {
 
     @Override
     public boolean canClose(@NotNull Project project) {
-        if (project.equals(this.project)) {
-            return true;
-        }
-        return false;
+        return project.equals(this.project);
     }
 }

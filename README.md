@@ -27,7 +27,25 @@ A lightweight and customizable PDF reader plugin for IntelliJ IDEA that seamless
 ---
 
 <!-- Plugin description -->
-这是一个用于 IntelliJ IDEA 的插件，提供了许多有用的功能。
+## FusionPDF - Seamlessly Integrate PDFs into Your Development Environment
+
+**FusionPDF** is a specialized PDF viewing and management tool designed for developers. It seamlessly integrates PDF files into your current IntelliJ IDEA theme, providing an immersive reading experience.
+
+### Key Features:
+
+- **Theme Matching**: Automatically matches the current IDE theme to ensure a seamless integration of the PDF reading interface with your development environment.
+- **Customization Options**: Supports user-defined background and text colors to meet personalized needs.
+- **Zoom Functionality**: Easily zoom in or out on PDF content for detailed views or overviews.
+- **Support for Scanned Image PDFs**: Perfectly handles scanned image PDF files, ensuring smooth reading of all types of PDF documents.
+
+### Hidden Features (Just Between Us):
+
+- *Efficient Breaks*: During intense coding sessions, you can use FusionPDF to browse documents, books, or any content you enjoy, enjoying a moment of peace.
+- *Inspiration Source*: When facing a programming bottleneck, flipping through technical articles or tutorials in PDFs might spark new ideas.
+- *Focus Enhancement*: By customizing background and text colors, create a more comfortable reading environment that helps improve work efficiency.
+
+Whether you're diving deep into learning new technologies or seeking a bit of relaxation amidst a busy workday, FusionPDF is an indispensable tool. Give it a try!
+
 <!-- Plugin description end -->
 
 ## Features

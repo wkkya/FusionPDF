@@ -4,7 +4,7 @@
     <name>FusionPDF</name>
 
     <!--  版本  -->
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <vendor>wangkuan</vendor>
 
@@ -13,9 +13,11 @@
 
 
 
-    <description><![CDATA[
-FusionPDF integrates PDF viewing into IntelliJ IDEA. It supports theme matching, customization options for background/text colors, zooming, and scanned image PDFs, enhancing productivity and reading experience.
-]]></description>
+    <description>
+        <![CDATA[
+            FusionPDF integrates PDF viewing into IntelliJ IDEA, providing seamless theme matching and customization options for background and text colors. It supports zooming functionality for detailed views, scanned image PDFs for versatile document handling, and includes features like quick navigation, search within PDFs, and bookmark management to significantly enhance productivity and reading experience.
+        ]]>
+    </description>
 
 
 
@@ -33,7 +35,7 @@ FusionPDF integrates PDF viewing into IntelliJ IDEA. It supports theme matching,
                              instance="com.github.wkkya.fusionpdf.factory.SettingFactory"/>
 
         <!-- 窗体 (IDEA 界面右侧) -->
-        <toolWindow id="FusionPDF" secondary="false" anchor="right" icon="/icons/logo.png"
+        <toolWindow id="FusionPDF" secondary="false" anchor="right" icon="/icons/logo.svg"
                     factoryClass="com.github.wkkya.fusionpdf.factory.ReadFactory"/>
     </extensions>
 

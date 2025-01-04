@@ -1,9 +1,11 @@
+import com.jetbrains.plugin.structure.base.utils.contentBuilder.buildDirectory
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
     id("java") // Java support
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     alias(libs.plugins.kotlin) // Kotlin support
     alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
@@ -33,9 +35,15 @@ repositories {
 dependencies {
     testImplementation(libs.junit)
 
+    implementation("org.apache.pdfbox:pdfbox:2.0.29") // 添加 pdfbox 依赖
+    implementation("org.apache.pdfbox:fontbox:2.0.29")// FontBox 依赖
+
     // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
     intellijPlatform {
         create(providers.gradleProperty("platformType"), providers.gradleProperty("platformVersion"))
+
+        implementation("org.apache.pdfbox:pdfbox:2.0.29") // 引入 pdfbox 依赖
+        implementation("org.apache.pdfbox:fontbox:2.0.29") // FontBox 依赖
 
         // Plugin Dependencies. Uses `platformBundledPlugins` property from the gradle.properties file for bundled IntelliJ Platform plugins.
         bundledPlugins(providers.gradleProperty("platformBundledPlugins").map { it.split(',') })
@@ -85,6 +93,7 @@ intellijPlatform {
             sinceBuild = providers.gradleProperty("pluginSinceBuild")
             untilBuild = providers.gradleProperty("pluginUntilBuild")
         }
+
     }
 
     signing {
@@ -106,6 +115,7 @@ intellijPlatform {
             recommended()
         }
     }
+
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
@@ -142,6 +152,26 @@ tasks {
     withType<JavaExec> {
         jvmArgs = listOf("-Dfile.encoding=UTF-8", "-Dsun.stdout.encoding=UTF-8", "-Dsun.stderr.encoding=UTF-8")
     }
+
+    // 配置已有的 shadowJar 任务
+    named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+        archiveClassifier.set("") // 确保打包为主要 JAR 文件
+        destinationDirectory.set(layout.buildDirectory.dir("libs/shadow").get().asFile) // 输出到一个单独的目录
+//        destinationDirectory.set(file("$buildDir/libs/shadow")) // 输出到一个单独的目录
+        dependencies {
+            include(dependency("org.apache.pdfbox:pdfbox")) // 包含指定依赖
+            include(dependency("org.apache.pdfbox:fontbox")) // 包含指定依赖
+        }
+    }
+
+//    named<Jar>("jar") {
+//        enabled = false // 禁用默认 jar 任务，避免冲突
+//    }
+
+    build {
+        dependsOn(shadowJar) // 在构建时生成 shadow JAR
+    }
+
 }
 
 intellijPlatformTesting {

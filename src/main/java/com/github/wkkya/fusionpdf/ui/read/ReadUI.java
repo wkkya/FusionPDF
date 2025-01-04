@@ -1,17 +1,17 @@
 package com.github.wkkya.fusionpdf.ui.read;
 
-//import com.github.wkkya.fusionpdf.module.ReadUIState;
-import com.intellij.openapi.components.ServiceManager;
-import com.intellij.openapi.ui.Messages;
+import com.intellij.ui.JBColor;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.ui.UIUtil;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.PDFRenderer;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +23,7 @@ import java.util.concurrent.Executors;
 public class ReadUI  {
     private JPanel mainPanel;
     private JLabel pdfViewer;
-    private JScrollPane pdfScrollPane;
-    private JPanel controlPanel;
+    private JBScrollPane pdfScrollPane;
     private JButton prevButton;
     private JButton nextButton;
     private JTextField pageField;
@@ -37,8 +36,10 @@ public class ReadUI  {
     private PDFRenderer pdfRenderer;
     private int currentPage = 0;
     private float scale = 1.0f; // 初始缩放比例
-    private Color backgroundColor = Color.DARK_GRAY; // 默认背景色
-    private Color textColor = Color.WHITE; // 默认文字颜色
+    private Color backgroundColor = JBColor.DARK_GRAY; // 默认背景色
+    private Color textColor = JBColor.WHITE; // 默认文字颜色
+
+    private int lastPage = 0; // 保存用户的最后阅读位置
 
     private final ExecutorService renderExecutor = Executors.newSingleThreadExecutor(); // 渲染线程池
 
@@ -48,12 +49,6 @@ public class ReadUI  {
     public ReadUI() {
         setupUI();
         setupListeners();
-
-        // 读取上次保存的页面位置
-//        ReadUIState state = ServiceManager.getService(ReadUIState.class);
-//        if (state != null) {
-//            currentPage = state.getLastPage();
-//        }
     }
 
     public JComponent getComponent() {
@@ -67,7 +62,7 @@ public class ReadUI  {
             }
             pdfDocument = PDDocument.load(new File(filePath));
             pdfRenderer = new PDFRenderer(pdfDocument);
-            currentPage = 0;
+            currentPage = lastPage;
             renderPage(); // 渲染第一页
         } catch (IOException e) {
             JOptionPane.showMessageDialog(mainPanel, "加载 PDF 文件失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
@@ -104,16 +99,26 @@ public class ReadUI  {
     }
 
     /**
-     * 渲染可见区域
-     * @param fullImage
-     * @param visibleWidth
-     * @param visibleHeight
-     * @return
+     * 异步渲染缓存
+     * @param currentPage
      */
-    private BufferedImage renderVisiblePart(BufferedImage fullImage, int visibleWidth, int visibleHeight) {
-        return fullImage.getSubimage(0, 0, visibleWidth, visibleHeight);
+    private void preloadPages(int currentPage) {
+        renderExecutor.submit(() -> {
+            try {
+                for (int i = -1; i <= 1; i++) { // 缓存当前页、上一页和下一页
+                    int pageIndex = currentPage + i;
+                    if (pageIndex >= 0 && pageIndex < pdfDocument.getNumberOfPages()) {
+                        int cacheKey = (int) (pageIndex + scale * 100);
+                        if (!pageCache.containsKey(cacheKey)) {
+                            doCache(cacheKey);
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
-
 
     /**
      * 搞笑缩放
@@ -125,7 +130,7 @@ public class ReadUI  {
         int newWidth = (int) (original.getWidth() * scale);
         int newHeight = (int) (original.getHeight() * scale);
         Image scaled = original.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-        BufferedImage result = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage result = UIUtil.createImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = result.createGraphics();
         g2d.drawImage(scaled, 0, 0, null);
         g2d.dispose();
@@ -154,20 +159,14 @@ public class ReadUI  {
         pageCache.put(cacheKey, originalImage);
     }
 
-    private BufferedImage scaleImage(BufferedImage image, int targetWidth, int targetHeight) {
-        // 使用高质量缩放方法
-        Image scaledInstance = image.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-        BufferedImage scaledImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = scaledImage.createGraphics();
-        g2d.drawImage(scaledInstance, 0, 0, null);
-        g2d.dispose();
-        return scaledImage;
-    }
+
+
+
 
     private BufferedImage processPDFImage(BufferedImage image) {
         int width = image.getWidth();
         int height = image.getHeight();
-        BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage result = UIUtil.createImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = result.createGraphics();
 
         // 启用抗锯齿
@@ -182,7 +181,11 @@ public class ReadUI  {
         // 替换背景色和调整文字颜色
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                Color originalColor = new Color(image.getRGB(x, y), true);
+//                Color originalColor = new Color(image.getRGB(x, y), true);
+                JBColor originalColor = new JBColor(
+                        new Color(image.getRGB(x, y), true),  // 浅色主题颜色
+                        new Color(image.getRGB(x, y), true)   // 深色主题颜色
+                );
                 if (isBackgroundColor(originalColor)) {
                     result.setRGB(x, y, backgroundColor.getRGB());
                 } else {
@@ -210,8 +213,8 @@ public class ReadUI  {
 
         mainPanel = new JPanel(new BorderLayout());
         pdfViewer = new JLabel();
-        pdfScrollPane = new JScrollPane(pdfViewer);
-        controlPanel = new JPanel();
+        pdfScrollPane = new JBScrollPane(pdfViewer);
+        JPanel controlPanel = new JPanel();
 
         prevButton = new JButton("上一页");
         nextButton = new JButton("下一页");
@@ -229,6 +232,18 @@ public class ReadUI  {
         zoomOutIcon = new ImageIcon(zoomOutImage);
         zoomOutLabel = new JLabel(zoomOutIcon);
         zoomOutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); // 鼠标指针变为手型
+
+
+
+//        ImageIcon zoomInIconLight = new ImageIcon(getClass().getResource("/icons/zoom_in_light.png"));
+//        ImageIcon zoomInIconDark = new ImageIcon(getClass().getResource("/icons/zoom_in_dark.png"));
+//        zoomInLabel = new JLabel(JBColor.isBright() ? zoomInIconDark : zoomInIconLight);
+//
+//        ImageIcon zoomOutIconLight = new ImageIcon(getClass().getResource("/icons/zoom_out_light.png"));
+//        ImageIcon zoomOutIconDark = new ImageIcon(getClass().getResource("/icons/zoom_out_dark.png"));
+//        zoomOutLabel = new JLabel(JBColor.isBright() ? zoomOutIconDark : zoomOutIconLight);
+
+
 
         pageField = new JTextField(5);
         pageField.setEditable(false);
@@ -252,6 +267,21 @@ public class ReadUI  {
     private void setupListeners() {
         prevButton.addActionListener(e -> navigatePage(-1));
         nextButton.addActionListener(e -> navigatePage(1));
+
+        pageField.addActionListener(e -> {
+            try {
+                int targetPage = Integer.parseInt(pageField.getText().split("/")[0].trim()) - 1;
+                if (targetPage >= 0 && targetPage < pdfDocument.getNumberOfPages()) {
+                    currentPage = targetPage;
+                    renderPage();
+                } else {
+                    JOptionPane.showMessageDialog(mainPanel, "页码超出范围！", "错误", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(mainPanel, "请输入有效的页码！", "错误", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
         // 为图标添加点击事件
         zoomInLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -286,7 +316,11 @@ public class ReadUI  {
 
     private void navigatePage(int delta) {
         if (pdfDocument == null) return;
-        currentPage = Math.max(0, Math.min(currentPage + delta, pdfDocument.getNumberOfPages() - 1));
+        int next = Math.min(currentPage + delta, pdfDocument.getNumberOfPages() - 1);
+        currentPage = Math.max(0, next);
+        //异步渲染缓存页面
+        preloadPages(next);
+        //渲染当前页面
         renderPage();
     }
 
@@ -306,23 +340,37 @@ public class ReadUI  {
         renderPage(); // 重新渲染当前页面
     }
 
-    /**
-     * 存储当前页面
-     */
-//    private void saveCurrentPage() {
-//        ReadUIState state = ServiceManager.getService(ReadUIState.class);
-//        if (state != null) {
-//            state.setLastPage(currentPage);
-//        }
-//    }
+
+    private void searchText(String query) {
+        if (pdfDocument == null) return;
+        try {
+            for (int page = 0; page < pdfDocument.getNumberOfPages(); page++) {
+                PDPage pdfPage = pdfDocument.getPage(page);
+                PDFTextStripper stripper = new PDFTextStripper();
+                stripper.setStartPage(page + 1);
+                stripper.setEndPage(page + 1);
+                String text = stripper.getText(pdfDocument);
+                if (text.contains(query)) {
+                    currentPage = page;
+                    renderPage();
+                    JOptionPane.showMessageDialog(mainPanel, "找到结果于第 " + (page + 1) + " 页", "提示", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(mainPanel, "搜索出错：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
 
     public void closePDF() {
         try {
+            lastPage = currentPage; // 记录当前页面
             if (pdfDocument != null) {
                 pdfDocument.close();
                 pdfDocument = null;
                 pdfRenderer = null;
-//                saveCurrentPage(); // 保存当前页面位置
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(mainPanel, "关闭 PDF 文件失败：" + e.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
