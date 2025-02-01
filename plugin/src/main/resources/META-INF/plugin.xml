@@ -28,6 +28,11 @@
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
     <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
                             implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+
+    <toolWindow id="FusionPDF"
+                factoryClass="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfToolWindowFactory"
+                anchor="left"/>
+
   </extensions>
 
   <applicationListeners>
@@ -38,4 +43,7 @@
   </applicationListeners>
 
   <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+
+
 </idea-plugin>
