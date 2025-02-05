@@ -152,10 +152,10 @@
       <reference ref="pdf.viewer.RotateCounterClockwiseAction"/>
       <separator/>
       <reference ref="pdf.viewer.ToggleScrollDirectionAction"/>
-      <separator/>
-      <reference ref="pdf.viewer.ToggleDocumentPresentationAction"/>
-      <reference ref="pdf.viewer.ToggleIdePresentationModeAction"/>
-      <separator/>
+<!--      <separator/>-->
+<!--      <reference ref="pdf.viewer.ToggleDocumentPresentationAction"/>-->
+<!--      <reference ref="pdf.viewer.ToggleIdePresentationModeAction"/>-->
+<!--      <separator/>-->
       <reference ref="pdf.viewer.ShowFindPopupAction"/>
     </group>
 
