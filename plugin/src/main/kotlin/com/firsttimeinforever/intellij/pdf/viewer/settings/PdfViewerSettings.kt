@@ -11,16 +11,16 @@ import com.intellij.openapi.util.registry.Registry
 import com.intellij.util.messages.Topic
 import com.intellij.util.xmlb.XmlSerializerUtil.copyBean
 
-@State(name = "PdfViewerSettings", storages = [(Storage("pdf_viewer.xml"))])
+@State(name = "PdfViewerSettings", storages = [(Storage("fusion_pdf_viewer.xml"))])
 class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
-  var useCustomColors = false
+  var useCustomColors = true
   var customBackgroundColor: Int = defaultBackgroundColor.rgb
   var customForegroundColor: Int = defaultForegroundColor.rgb
   var customIconColor: Int = defaultIconColor.rgb
   var enableDocumentAutoReload = true
   var documentColorsInvertIntensity: Int = defaultDocumentColorsInvertIntensity
-  var invertDocumentColors = false
-  var invertColorsWithTheme = false
+  var invertDocumentColors = true
+  var invertColorsWithTheme = true
 
   var defaultSidebarViewMode: SidebarViewMode = SidebarViewMode.THUMBNAILS
 
@@ -49,7 +49,7 @@ class PdfViewerSettings : PersistentStateComponent<PdfViewerSettings> {
     val defaultIconColor
       get() = defaultForegroundColor
 
-    const val defaultDocumentColorsInvertIntensity = 85
+    const val defaultDocumentColorsInvertIntensity = 90
 
     val enableExperimentalFeatures: Boolean
       get() = Registry.`is`("pdf.viewer.enableExperimentalFeatures")

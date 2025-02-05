@@ -6,12 +6,9 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileEditor.*
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.ToolWindowManager
-import javax.swing.JComponent
-import javax.swing.JLabel
-import javax.swing.JPanel
+
 
 class PdfFileEditorProvider : AsyncFileEditorProvider, DumbAware {
   override fun getEditorTypeId() = "FusionPDF"
@@ -19,14 +16,18 @@ class PdfFileEditorProvider : AsyncFileEditorProvider, DumbAware {
   override fun accept(project: Project, file: VirtualFile): Boolean {
     logger.debug("check accept, file: $file")
     return file.fileType == PdfFileType
+//    return false;
   }
 
   override fun createEditor(project: Project, file: VirtualFile): FileEditor {
     openPdfInToolWindow(project, file)
     return DummyPdfEditor(file)
+//    return NonEditor();
   }
 
   override fun getPolicy(): FileEditorPolicy = FileEditorPolicy.HIDE_DEFAULT_EDITOR
+
+//  override fun getPolicy(): FileEditorPolicy = FileEditorPolicy.NONE
 
   override fun createEditorAsync(project: Project, file: VirtualFile): AsyncFileEditorProvider.Builder {
     return object : AsyncFileEditorProvider.Builder() {
@@ -40,19 +41,30 @@ class PdfFileEditorProvider : AsyncFileEditorProvider, DumbAware {
   private fun openPdfInToolWindow(project: Project, file: VirtualFile) {
     val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("FusionPDF")
     if (toolWindow != null) {
-      toolWindow.activate {
-        val contentManager = toolWindow.contentManager
-        val pdfPanel = PdfViewerPanel(project, file)
-        val content = contentManager.factory.createContent(pdfPanel, file.name, false)
-        contentManager.addContent(content)
-        contentManager.setSelectedContent(content)
-      }
+        toolWindow.activate {
+            val contentManager = toolWindow.contentManager
+            // 检查是否已经存在相同文件的 PdfViewerPanel
+            val existingContent = contentManager.contents.find { content ->
+                content.component is PdfViewerPanel && (content.component as PdfViewerPanel).file.path == file.path
+            }
+            if (existingContent != null) {
+                contentManager.setSelectedContent(existingContent)
+            } else {
+                val pdfPanel = PdfViewerPanel(project, file)
+                val content = contentManager.factory.createContent(pdfPanel, file.name, false)
+                contentManager.addContent(content)
+                contentManager.setSelectedContent(content)
+            }
+        }
     } else {
-      logger.warn("FusionPDF ToolWindow not found!")
+        logger.warn("FusionPDF ToolWindow not found!")
     }
   }
 
   companion object {
     private val logger = logger<PdfFileEditorProvider>()
   }
+
+
+
 }

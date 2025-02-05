@@ -24,14 +24,17 @@
     <registryKey defaultValue="true" key="pdf.viewer.use.jcef.osr.view" description="Enables JCEF off-screen rendering"/>
 
     <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
-    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>
+<!--    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>-->
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
     <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
                             implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
 
+<!--    <fileDropHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.PdfFileDropHandler"/>-->
+
     <toolWindow id="FusionPDF"
                 factoryClass="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfToolWindowFactory"
                 anchor="left"/>
+
 
   </extensions>
 
@@ -41,6 +44,7 @@
     <listener class="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerInvertColorsListener"
               topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
   </applicationListeners>
+
 
   <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
 
