@@ -1,6 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
+import com.firsttimeinforever.intellij.pdf.viewer.ui.PdfViewerPanel
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.ide.ui.UISettings
@@ -12,6 +13,9 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.wm.ToolWindowManager
+import java.awt.Component
+import java.awt.Container
 
 abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = ViewModeAwareness.IDE) : AnAction() {
 
@@ -50,14 +54,32 @@ abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = Vi
      * (split view) and select the first we find there. If there is no [PdfFileEditor] selected, this returns null. Note that in that case it
      * is possible that there is a PDF open somewhere, but it is not in view.
      */
-    fun findEditorInView(event: AnActionEvent): PdfFileEditor? {
-      val focusedEditor = event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor
+//    fun findEditorInView(event: AnActionEvent): PdfFileEditor? {
+//      val focusedEditor = event.getData(PlatformDataKeys.FILE_EDITOR) as? PdfFileEditor
+//
+//      return focusedEditor ?: run {
+//        val project = event.project ?: return null
+//        FileEditorManager.getInstance(project).selectedEditors.firstOrNull {it is PdfFileEditor} as? PdfFileEditor
+//      }
+//    }
 
-      return focusedEditor ?: run {
-        val project = event.project ?: return null
-        FileEditorManager.getInstance(project).selectedEditors.firstOrNull {it is PdfFileEditor} as? PdfFileEditor
+
+    fun findEditorInView(event: AnActionEvent): PdfViewerPanel? {
+      val project = event.project ?: return null
+
+      // 1️⃣ 尝试获取焦点的 UI 组件
+      val contextComponent = event.getData(PlatformDataKeys.CONTEXT_COMPONENT)
+      if (contextComponent is PdfViewerPanel) {
+        return contextComponent
       }
+
+      // 2️⃣ 从 ToolWindow 里查找 PdfViewerPanel
+      val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("FusionPDF") ?: return null
+      val contentManager = toolWindow.contentManager
+      return contentManager.selectedContent?.component as? PdfViewerPanel
     }
+
+
 
     fun hasEditorInView(event: AnActionEvent): Boolean {
       return findEditorInView(event) != null
@@ -67,7 +89,11 @@ abstract class PdfAction(protected val viewModeAwareness: ViewModeAwareness = Vi
       return findEditorInView(event)?.viewComponent?.controller
     }
 
-    fun findController(editor: PdfFileEditor?): PdfJcefPreviewController? {
+//    fun findController(editor: PdfFileEditor?): PdfJcefPreviewController? {
+//      return editor?.viewComponent?.controller
+//    }
+
+    fun findController(editor: PdfViewerPanel?): PdfJcefPreviewController? {
       return editor?.viewComponent?.controller
     }
 

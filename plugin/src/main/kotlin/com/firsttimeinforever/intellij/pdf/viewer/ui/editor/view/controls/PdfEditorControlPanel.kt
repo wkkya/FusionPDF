@@ -12,13 +12,15 @@ import javax.swing.JPanel
 class PdfEditorControlPanel: JPanel(GridLayout()), Disposable {
   private val leftToolbar = createActionToolbar(
     "pdf.viewer.LeftToolbarActionGroup",
-    ActionPlaces.EDITOR_TOOLBAR,
+//    ActionPlaces.EDITOR_TOOLBAR,
+    ActionPlaces.TOOLWINDOW_CONTENT,
     this
   )
 
   private val rightToolbar = createActionToolbar(
     "pdf.viewer.RightToolbarActionGroup",
-    ActionPlaces.EDITOR_TOOLBAR,
+//    ActionPlaces.EDITOR_TOOLBAR,
+    ActionPlaces.TOOLWINDOW_CONTENT,
     this
   )
 

@@ -14,7 +14,7 @@ import java.awt.BorderLayout
 import javax.swing.JPanel
 
 class PdfViewerPanel(private val project: Project, private val virtualFile: VirtualFile) : JPanel(BorderLayout()) {
-  private val viewComponent = PdfEditorViewComponent(project, virtualFile)
+  public val viewComponent = PdfEditorViewComponent(project, virtualFile)
   private val messageBusConnection = project.messageBus.connect()
   private val fileChangedListener = FileChangedListener(PdfViewerSettings.instance.enableDocumentAutoReload)
 

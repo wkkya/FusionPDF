@@ -11,8 +11,8 @@ import javax.swing.JPanel
 class PdfToolWindowFactory : ToolWindowFactory, DumbAware {
   override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
     val emptyPanel = JPanel() // 初始时是空白面板，文件打开时才动态添加 PDF 视图
-    val content = ContentFactory.getInstance().createContent(emptyPanel, "FusionPDF", false)
-    toolWindow.contentManager.addContent(content)
+//    val content = ContentFactory.getInstance().createContent(emptyPanel, "FusionPDF", false)
+//    toolWindow.contentManager.addContent(content)
   }
 
   companion object {
