@@ -15,7 +15,7 @@
               language="PDF"
               fieldName="INSTANCE"
               implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
-    <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
+<!--    <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>-->
     <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
 
     <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
@@ -29,7 +29,7 @@
     <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
                             implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
 
-<!--    <fileDropHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.PdfFileDropHandler"/>-->
+    <fileDropHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.PdfFileDropHandler"/>
 
     <toolWindow id="FusionPDF"
                 factoryClass="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfToolWindowFactory"
@@ -43,6 +43,8 @@
               topic="com.intellij.openapi.project.ProjectManagerListener"/>
     <listener class="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerInvertColorsListener"
               topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileOpenListener"
+              topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
   </applicationListeners>
 
 
