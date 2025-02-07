@@ -15,7 +15,7 @@
               language="PDF"
               fieldName="INSTANCE"
               implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
-<!--    <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>-->
+    <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
     <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
 
     <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
@@ -24,7 +24,8 @@
     <registryKey defaultValue="true" key="pdf.viewer.use.jcef.osr.view" description="Enables JCEF off-screen rendering"/>
 
     <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
-<!--    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>-->
+<!--    设置-->
+    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>
     <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
     <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
                             implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
@@ -33,7 +34,9 @@
 
     <toolWindow id="FusionPDF"
                 factoryClass="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfToolWindowFactory"
-                anchor="left"/>
+                anchor="left"
+                icon="/META-INF/pluginIcon.svg"
+    />
 
 
   </extensions>
@@ -45,6 +48,7 @@
               topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
     <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileOpenListener"
               topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+
   </applicationListeners>
 
 

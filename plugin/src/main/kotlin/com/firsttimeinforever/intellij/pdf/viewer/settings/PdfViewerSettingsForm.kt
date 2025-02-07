@@ -2,6 +2,7 @@ package com.firsttimeinforever.intellij.pdf.viewer.settings
 
 import com.firsttimeinforever.intellij.pdf.viewer.PdfViewerBundle
 import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
+import com.firsttimeinforever.intellij.pdf.viewer.ui.PdfViewerPanel
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.not
@@ -12,6 +13,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JPanel
+import javax.swing.SwingUtilities
 
 class PdfViewerSettingsForm : JPanel() {
   private val settings
@@ -145,7 +147,7 @@ class PdfViewerSettingsForm : JPanel() {
     customIconColor.set(settings.customIconColor)
   }
 
-  private fun resetViewerColorsToTheme() {
+  fun resetViewerColorsToTheme() {
     PdfViewerSettings.run {
       backgroundColorPanel.selectedColor = defaultBackgroundColor
       customBackgroundColor.set(defaultBackgroundColor.rgb)
@@ -155,4 +157,24 @@ class PdfViewerSettingsForm : JPanel() {
       customIconColor.set(defaultIconColor.rgb)
     }
   }
+
+  public fun resetViewerColorsToTheme(pdfViewerPanel: PdfViewerPanel) {
+    PdfViewerSettings.run {
+      backgroundColorPanel.selectedColor = defaultBackgroundColor
+      customBackgroundColor.set(defaultBackgroundColor.rgb)
+      foregroundColorPanel.selectedColor = defaultForegroundColor
+      customForegroundColor.set(defaultForegroundColor.rgb)
+      iconColorPanel.selectedColor = defaultIconColor
+      customIconColor.set(defaultIconColor.rgb)
+
+      // 主动更新 PdfViewerPanel 颜色
+      SwingUtilities.invokeLater {
+        pdfViewerPanel.background = defaultBackgroundColor
+        pdfViewerPanel.foreground = defaultForegroundColor
+        pdfViewerPanel.repaint()
+        pdfViewerPanel.revalidate()
+      }
+    }
+  }
+
 }

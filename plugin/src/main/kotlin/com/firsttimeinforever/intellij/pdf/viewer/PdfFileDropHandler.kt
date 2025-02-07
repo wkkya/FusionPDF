@@ -11,25 +11,6 @@ import com.intellij.openapi.wm.ToolWindowManager
 //import com.intellij.openapi.fileEditor.impl.FileDropHandler
 
 class PdfFileDropHandler : FileDropHandler {
-//  override fun handleDrop(project: Project, file: VirtualFile): Boolean {
-//    if (file.extension.equals("pdf", ignoreCase = true)) {
-//      openPdfInToolWindow(project, file)
-//      return true // 阻止默认打开行为
-//    }
-//    return false
-//  }
-
-//  private fun openPdfInToolWindow(project: Project, file: VirtualFile) {
-//    val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("FusionPDF")
-//    toolWindow?.activate {
-//      val pdfPanel = PdfViewerPanel(project, file)
-//      val content = toolWindow.contentManager.factory.createContent(pdfPanel, file.name, false)
-//      toolWindow.contentManager.removeAllContents(true)
-//      toolWindow.contentManager.addContent(content)
-//      toolWindow.contentManager.setSelectedContent(content)
-//    }
-//  }
-
 
   private fun openPdfInToolWindow(project: Project, file: VirtualFile) {
     val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("FusionPDF")

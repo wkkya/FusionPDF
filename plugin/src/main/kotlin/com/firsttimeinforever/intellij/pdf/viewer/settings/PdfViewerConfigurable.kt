@@ -8,6 +8,8 @@ class PdfViewerConfigurable : Configurable {
   private var settingsForm: PdfViewerSettingsForm? = null
   private val settings = PdfViewerSettings.instance
 
+  private var settingsForm: PdfViewerSettingsForm? = PdfViewerSettingsForm()
+
   override fun isModified(): Boolean {
     return settingsForm?.run {
       settings.enableDocumentAutoReload != enableDocumentAutoReload.get() ||

@@ -25,11 +25,6 @@ class PdfEditorViewComponent(val project: Project, virtualFile: VirtualFile) : J
     add(searchPanel, "growx, pushx")
   }
 
-//  private val wrapperPanel = JPanel(BorderLayout()).apply {
-//    add(controlPanel, BorderLayout.NORTH) // 工具栏放顶部
-//    add(searchPanel, BorderLayout.CENTER) // 搜索栏
-//  }
-
 
   init {
     Disposer.register(this, controlPanel)
@@ -48,20 +43,6 @@ class PdfEditorViewComponent(val project: Project, virtualFile: VirtualFile) : J
       searchPanel.updateResults(it.result.currentMatch, it.result.totalMatches)
     }
   }
-
-//  init {
-//    Disposer.register(this, controlPanel)
-//    Disposer.register(this, searchPanel)
-//    if (controller != null) {
-//      Disposer.register(this, controller)
-//    } else {
-//      logger.warn("View controller is null!")
-//    }
-//    layout = BorderLayout()
-//    add(wrapperPanel, BorderLayout.NORTH) // 工具栏和搜索栏
-//    add(controller?.component ?: PdfUnsupportedViewPanel(), BorderLayout.CENTER) // PDF 预览
-//  }
-
 
   override fun dispose() = Unit
 

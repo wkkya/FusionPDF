@@ -28,6 +28,28 @@ object ThemeUtils {
       selectorText = ".page, .thumbnailImage",
       body = "filter: invert(${viewTheme.colorInvertIntensity}%);"
     )
+
+    // **新增**：同步修改滚动条颜色
+    css.addOrReplaceRule(
+      selectorText = "::-webkit-scrollbar",
+      body = "width: 10px; height: 10px;" // 控制滚动条宽度
+    )
+    css.addOrReplaceRule(
+      selectorText = "::-webkit-scrollbar-track",
+      body = "background: ${viewTheme.background};" // 轨道背景颜色
+    )
+    css.addOrReplaceRule(
+      selectorText = "::-webkit-scrollbar-thumb",
+      body = "background: ${viewTheme.foreground}; border-radius: 5px;" // 滚动条滑块颜色
+    )
+    css.addOrReplaceRule(
+      selectorText = "::-webkit-scrollbar-thumb:hover",
+      body = "background: ${viewTheme.icons};" // 悬停时的颜色
+    )
+
+
+
+
   }
 
   /**
