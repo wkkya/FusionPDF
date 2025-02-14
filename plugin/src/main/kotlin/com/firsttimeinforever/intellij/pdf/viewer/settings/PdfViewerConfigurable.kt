@@ -5,7 +5,7 @@ import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
 
 class PdfViewerConfigurable : Configurable {
-  private var settingsForm: PdfViewerSettingsForm? = null
+//  private var settingsForm: PdfViewerSettingsForm? = null
   private val settings = PdfViewerSettings.instance
 
   private var settingsForm: PdfViewerSettingsForm? = PdfViewerSettingsForm()

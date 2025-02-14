@@ -1,7 +1,9 @@
 package com.firsttimeinforever.intellij.pdf.viewer.ui
 
+import com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfEditorViewComponent
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
@@ -33,6 +35,9 @@ class PdfViewerPanel(private val project: Project, private val virtualFile: Virt
     })
   }
 
+
+
+
   private inner class FileChangedListener(var isEnabled: Boolean = true) : BulkFileListener {
     override fun after(events: MutableList<out VFileEvent>) {
       if (!isEnabled) {
@@ -47,7 +52,19 @@ class PdfViewerPanel(private val project: Project, private val virtualFile: Virt
     }
   }
 
+  fun getCurrentPdfPath(): String {
+//    val base = PdfStaticServer.instance.getPreviewUrl(virtualFile, withReloadSalt = true)
+    val base = virtualFile.path
+    return base;
+  }
+
+
   companion object {
+    fun openPdf(project: Project, pdfPath: String): PdfViewerPanel? {
+      val virtualFile = VirtualFileManager.getInstance().findFileByUrl("file://$pdfPath") ?: return null
+      PdfFileEditorProvider().accept(project, virtualFile)
+      return PdfViewerPanel(project, virtualFile)
+    }
     private val logger = logger<PdfViewerPanel>()
   }
 }

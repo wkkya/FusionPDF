@@ -120,8 +120,8 @@
       <reference ref="pdf.viewer.HideSidebarAction"/>
       <separator/>
       <reference ref="pdf.viewer.SetSidebarThumbnailsViewModeAction"/>
-      <reference ref="pdf.viewer.SetSidebarAttachmentsViewModeAction"/>
-      <reference ref="pdf.viewer.SetSidebarOutlineViewModeAction"/>
+<!--      <reference ref="pdf.viewer.SetSidebarAttachmentsViewModeAction"/>-->
+<!--      <reference ref="pdf.viewer.SetSidebarOutlineViewModeAction"/>-->
     </group>
 
     <group class="com.firsttimeinforever.intellij.pdf.viewer.actions.PdfPageSpreadActionGroup"
@@ -129,14 +129,14 @@
            popup="true">
       <reference ref="pdf.viewer.SetPageSpreadNoneAction"/>
       <reference ref="pdf.viewer.SetPageSpreadOddAction"/>
-      <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>
+<!--      <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>-->
     </group>
 
     <group id="pdf.viewer.LeftToolbarActionGroup">
       <reference ref="pdf.viewer.EditorSidebarViewModeActionGroup"/>
-      <separator/>
-      <reference ref="pdf.viewer.NavigateBackByHistoryAction"/>
-      <reference ref="pdf.viewer.NavigateForwardByHistoryAction"/>
+<!--      <separator/>-->
+<!--      <reference ref="pdf.viewer.NavigateBackByHistoryAction"/>-->
+<!--      <reference ref="pdf.viewer.NavigateForwardByHistoryAction"/>-->
       <separator/>
       <reference ref="pdf.viewer.GotoPreviousPageAction"/>
       <reference ref="pdf.viewer.GotoNextPageAction"/>
@@ -146,7 +146,7 @@
       <separator/>
       <reference ref="pdf.viewer.SetPageSpreadNoneAction"/>
       <reference ref="pdf.viewer.SetPageSpreadOddAction"/>
-      <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>
+<!--      <reference ref="pdf.viewer.SetPageSpreadEvenAction"/>-->
       <separator/>
       <reference ref="pdf.viewer.RotateClockwiseAction"/>
       <reference ref="pdf.viewer.RotateCounterClockwiseAction"/>

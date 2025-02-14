@@ -3,7 +3,6 @@ package com.firsttimeinforever.intellij.pdf.viewer.tex
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditor
 import com.firsttimeinforever.intellij.pdf.viewer.utility.CommandExecutionUtils.getCommandStdoutIfSuccessful
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.ide.actions.OpenInRightSplitAction
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
@@ -69,8 +68,9 @@ class TexPdfViewer : ExternalPdfViewer {
           // Only open in right split when there already is an open file, otherwise it is not possible to open a right split because there
           // is nothing to split.
           if (fileEditorManager.hasOpenFiles()) {
-            val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
-            editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor
+            val editorWindow = FileEditorManager.getInstance(project).openFile(file, true)
+//            val editorWindow = OpenInRightSplitAction.openInRightSplit(project, file, pdfEditor, requestFocus = false)
+//            editorWindow?.selectedComposite?.selectedWithProvider?.fileEditor as? PdfFileEditor
           } else {
             pdfEditor.navigate(false)
             fileEditorManager.getSelectedEditor(file) as PdfFileEditor
@@ -90,15 +90,15 @@ class TexPdfViewer : ExternalPdfViewer {
           .associate { it.groups["id"]?.value to it.groups["value"]?.value }
           .filter { it.key != null && it.value != null }
 
-        jcefEditor?.viewComponent?.controller?.setForwardSearchData(
-          SynctexPreciseLocation(
-            values["Page"]?.toInt() ?: 1,
-            values["h"]?.toDouble() ?: 0.0,
-            values["v"]?.toDouble() ?: 0.0,
-            values["W"]?.toDouble() ?: 0.0,
-            values["H"]?.toDouble() ?: 0.0,
-          )
-        )
+//        jcefEditor?.viewComponent?.controller?.setForwardSearchData(
+//          SynctexPreciseLocation(
+//            values["Page"]?.toInt() ?: 1,
+//            values["h"]?.toDouble() ?: 0.0,
+//            values["v"]?.toDouble() ?: 0.0,
+//            values["W"]?.toDouble() ?: 0.0,
+//            values["H"]?.toDouble() ?: 0.0,
+//          )
+//        )
       }
     }
   }

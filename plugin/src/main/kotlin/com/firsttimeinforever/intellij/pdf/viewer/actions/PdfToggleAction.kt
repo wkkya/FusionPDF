@@ -13,8 +13,8 @@ abstract class PdfToggleAction(viewModeAwareness: ViewModeAwareness = ViewModeAw
   override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
 
   override fun update(event: AnActionEvent) {
-    super.update(event)
-    base.update(event)
+//    super.update(event)
+//    base.update(event)
   }
 
   private inner class StubAction(viewModeAwareness: ViewModeAwareness) : PdfAction(viewModeAwareness) {

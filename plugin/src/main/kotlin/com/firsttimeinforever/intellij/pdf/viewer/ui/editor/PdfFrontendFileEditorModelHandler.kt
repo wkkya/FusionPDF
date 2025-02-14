@@ -5,12 +5,11 @@ import com.firsttimeinforever.intellij.pdf.viewer.ui.PdfViewerPanel
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
-import com.jetbrains.rd.ide.model.FileEditorModel
-import com.jetbrains.rd.util.lifetime.Lifetime
+//import com.jetbrains.rd.ide.model.FileEditorModel
 import com.intellij.openapi.wm.ToolWindowManager
 
 class PdfFrontendFileEditorModelHandler {
-  fun accept(project: Project, file: VirtualFile, model: FileEditorModel): Boolean {
+  fun accept(project: Project, file: VirtualFile): Boolean {
     logger.debug("check accept, file: $file")
     return file.fileType == PdfFileType
   }

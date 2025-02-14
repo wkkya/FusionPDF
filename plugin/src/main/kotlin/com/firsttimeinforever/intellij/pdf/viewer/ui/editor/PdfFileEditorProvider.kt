@@ -17,6 +17,11 @@ import javax.swing.JPanel
 class PdfFileEditorProvider : FileEditorProvider, DumbAware {
   override fun getEditorTypeId() = "FusionPDF"
 
+
+  fun instance(){
+    return
+  }
+
   // IDEA 检测文件时，直接拦截 PDF，不让其进入编辑器
   override fun accept(project: Project, file: VirtualFile): Boolean {
     logger.debug("Intercepting file opening: $file")

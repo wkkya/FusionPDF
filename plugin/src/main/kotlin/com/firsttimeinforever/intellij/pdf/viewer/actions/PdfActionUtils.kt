@@ -33,6 +33,20 @@ internal object PdfActionUtils {
     )
   }
 
+//  fun performAction(action: AnAction, component: Component) {
+//    val context = DataManager.getInstance().getDataContext(component)
+//    val event = AnActionEvent(
+//      null,
+//      context,
+//      ActionPlaces.UNKNOWN,
+//      Presentation(),
+//      ActionManager.getInstance(),
+//      0
+//    )
+//
+//    ActionManager.getInstance().tryToExecute(action, event.inputEvent, component, null, true)
+//  }
+
   fun performAction(actionId: String, component: Component) {
     val manager = ActionManager.getInstance()
     val action = manager.getAction(actionId)

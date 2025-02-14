@@ -36,6 +36,10 @@ repositories {
   }
 }
 
+//intellij {
+//  updateSinceUntilBuild.set(false) // 禁止 Gradle 修改 `plugin.xml`
+//}
+
 dependencies {
   intellijPlatform {
     instrumentationTools()
@@ -102,6 +106,11 @@ intellijPlatform {
         }
       }
       )
+
+    ideaVersion {
+      sinceBuild.set(fromProperties("pluginSinceVersion"))
+      untilBuild.set(fromProperties("pluginUntilVersion"))
+    }
   }
 
   pluginVerification {

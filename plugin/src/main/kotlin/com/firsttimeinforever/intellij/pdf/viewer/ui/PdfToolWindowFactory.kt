@@ -33,7 +33,12 @@ class PdfToolWindowFactory : ToolWindowFactory {
                 <div style='text-align:center;'>
                     <div style='text-align:left; font-size:14px; font-weight:bold; color:#${Integer.toHexString(textColor.rgb).substring(2)};'>
                         <p>请选择一个 PDF 文件 拖入 进行阅读</p>
-                        <p>支持快捷键 <span style='color:#${Integer.toHexString(highlightColor.rgb).substring(2)};'>Ctrl+鼠标中键</span> 缩放</p>
+                        <p>放大/缩小 <span style='color:#${Integer.toHexString(highlightColor.rgb).substring(2)};'>Ctrl + 或 Ctrl - 或 Ctrl 鼠标滚轮</span> 缩放</p>
+                        <p>向右/向左 <span style='color:#${Integer.toHexString(highlightColor.rgb).substring(2)};'> 左箭头 或 右箭头 </span> 翻页</p>
+                        <p style='text-align:left; font-size:12px; font-weight:normal; color:#${Integer.toHexString(textColor.rgb).substring(2)};'>
+                        ps : 2020.2 以上版本 IDE 默认捆绑 JCEF，插件应该可以正常工作。
+                        （如果不起作用，可以手动更改IDE JBR或将ide.browser.jcef.enabled注册表标志设置为true）。
+                        </p>
                     </div>
                 </div>
             </html>
