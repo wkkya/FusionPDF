@@ -158,7 +158,9 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
 
   val component get() = browser.component
 
-  private fun doActualReload(tryToPreserveState: Boolean = false) {
+ fun instance() = this
+
+   fun doActualReload(tryToPreserveState: Boolean = false) {
     viewLoaded = false
     try {
       val base = PdfStaticServer.instance.getPreviewUrl(virtualFile, withReloadSalt = true)

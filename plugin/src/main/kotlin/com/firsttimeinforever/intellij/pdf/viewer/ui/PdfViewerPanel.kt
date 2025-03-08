@@ -5,6 +5,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings
 import com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettingsListener
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider
 import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfEditorViewComponent
+import com.firsttimeinforever.intellij.pdf.viewer.ui.editor.view.PdfJcefPreviewController
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
@@ -62,7 +63,17 @@ class PdfViewerPanel(private val project: Project, private val virtualFile: Virt
   companion object {
     fun openPdf(project: Project, pdfPath: String): PdfViewerPanel? {
       val virtualFile = VirtualFileManager.getInstance().findFileByUrl("file://$pdfPath") ?: return null
+      if (!PdfFileEditorProvider().accept(project, virtualFile)) {
+        logger.warn("PdfFileEditorProvider.accept returned false for $pdfPath")
+        return null
+      }
+      if(null == project || null == virtualFile){
+        return null;
+      }
+
       PdfFileEditorProvider().accept(project, virtualFile)
+      val controller = PdfJcefPreviewController(project, virtualFile)
+      controller.doActualReload(true)
       return PdfViewerPanel(project, virtualFile)
     }
     private val logger = logger<PdfViewerPanel>()

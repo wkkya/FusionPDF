@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 
 class PdfReloadViewAction : PdfDumbAwareAction() {
   override fun actionPerformed(event: AnActionEvent) {
-    findController(event)?.reload(tryToPreserveState = true)
+    findController(event)?.doActualReload(tryToPreserveState = true)
   }
 
   override fun update(event: AnActionEvent) {
