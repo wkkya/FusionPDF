@@ -2,7 +2,9 @@ package com.firsttimeinforever.intellij.pdf.viewer.actions
 
 import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.ex.ActionUtil
 import java.awt.Component
+import java.awt.event.KeyEvent
 import javax.swing.JComponent
 
 internal object PdfActionUtils {
@@ -19,38 +21,54 @@ internal object PdfActionUtils {
     return toolbar
   }
 
-  fun performAction(action: AnAction, component: Component) {
-    val context = DataManager.getInstance().getDataContext(component)
-    action.actionPerformed(
-      AnActionEvent(
-        null,
-        context,
-        ActionPlaces.UNKNOWN,
-        Presentation(),
-        ActionManager.getInstance(),
-        0
-      )
-    )
-  }
-
 //  fun performAction(action: AnAction, component: Component) {
 //    val context = DataManager.getInstance().getDataContext(component)
-//    val event = AnActionEvent(
-//      null,
-//      context,
-//      ActionPlaces.UNKNOWN,
-//      Presentation(),
-//      ActionManager.getInstance(),
-//      0
+//    action.actionPerformed(
+//      AnActionEvent(
+//        null,
+//        context,
+//        ActionPlaces.UNKNOWN,
+//        Presentation(),
+//        ActionManager.getInstance(),
+//        0
+//      )
 //    )
-//
-//    ActionManager.getInstance().tryToExecute(action, event.inputEvent, component, null, true)
 //  }
 
-  fun performAction(actionId: String, component: Component) {
-    val manager = ActionManager.getInstance()
-    val action = manager.getAction(actionId)
-    checkNotNull(action)
-    performAction(action, component)
+  fun performAction(action: AnAction, component: Component) {
+    // 方式一：创建带InputEvent的合法事件
+    val inputEvent = KeyEvent(component, KeyEvent.KEY_PRESSED,
+      System.currentTimeMillis(), 0, KeyEvent.VK_ENTER, '\n')
+    val event = AnActionEvent.createFromInputEvent(
+      inputEvent,
+      ActionPlaces.UNKNOWN,
+      Presentation(),
+      DataManager.getInstance().getDataContext(component)
+    )
+
+    // 合法调用方式（需API 2021.3+）
+    ActionManager.getInstance().tryToExecute(action, inputEvent, component, "", true)
   }
+
+
+
+
+
+
+
+
+
+
+
+
+//  fun performAction(actionId: String, component: Component) {
+//    val manager = ActionManager.getInstance()
+//    val action = manager.getAction(actionId)
+//    checkNotNull(action)
+////    performAction(action, component)
+//
+//    val inputEvent = KeyEvent(component, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_ENTER, '\n')
+//    val event = AnActionEvent.createFromInputEvent(inputEvent, action.templatePresentation)
+//    ActionManager.getInstance().tryToExecute(action, event.inputEvent, null, null, true)
+//  }
 }

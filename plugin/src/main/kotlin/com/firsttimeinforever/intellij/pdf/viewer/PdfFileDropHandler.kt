@@ -10,33 +10,34 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.ToolWindowManager
 //import com.intellij.openapi.fileEditor.impl.FileDropHandler
 
+import com.intellij.openapi.application.ApplicationManager
+
 class PdfFileDropHandler : FileDropHandler {
 
   private fun openPdfInToolWindow(project: Project, file: VirtualFile) {
-    val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("FusionPDF")
-    if (toolWindow != null) {
-      toolWindow.activate {
-        val contentManager = toolWindow.contentManager
-        // 检查是否已经存在相同文件的 PdfViewerPanel
-        val existingContent = contentManager.contents.find { content ->
-          content.component is PdfViewerPanel && (content.component as PdfViewerPanel).file.path == file.path
-        }
-        if (existingContent != null) {
-          contentManager.setSelectedContent(existingContent)
-        } else {
-          // 关闭其他已经打开的文件
-          contentManager.contents.forEach { content ->
-            contentManager.removeContent(content, true)
+    ApplicationManager.getApplication().invokeLater {
+      val toolWindow = ToolWindowManager.getInstance(project).getToolWindow("FusionPDF")
+      if (toolWindow != null) {
+        toolWindow.activate {
+          val contentManager = toolWindow.contentManager
+          val existingContent = contentManager.contents.find { content ->
+            content.component is PdfViewerPanel && (content.component as PdfViewerPanel).file.path == file.path
           }
-
-          val pdfPanel = PdfViewerPanel(project, file)
-          val content = contentManager.factory.createContent(pdfPanel, file.name, false)
-          contentManager.addContent(content)
-          contentManager.setSelectedContent(content)
+          if (existingContent != null) {
+            contentManager.setSelectedContent(existingContent)
+          } else {
+            contentManager.contents.forEach { content ->
+              contentManager.removeContent(content, true)
+            }
+            val pdfPanel = PdfViewerPanel(project, file)
+            val content = contentManager.factory.createContent(pdfPanel, file.name, false)
+            contentManager.addContent(content)
+            contentManager.setSelectedContent(content)
+          }
         }
+      } else {
+        logger.warn("FusionPDF ToolWindow not found!")
       }
-    } else {
-      logger.warn("FusionPDF ToolWindow not found!")
     }
   }
 
@@ -47,7 +48,7 @@ class PdfFileDropHandler : FileDropHandler {
       val virtualFile: VirtualFile? = VfsUtil.findFileByIoFile(file, true)
       if (virtualFile != null) {
         openPdfInToolWindow(project, virtualFile)
-        return true // 阻止默认打开行为
+        return true
       }
     }
     return false

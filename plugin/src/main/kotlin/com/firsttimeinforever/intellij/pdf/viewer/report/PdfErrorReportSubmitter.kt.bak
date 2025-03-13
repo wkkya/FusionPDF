@@ -19,7 +19,6 @@ import io.sentry.SentryClient
 import io.sentry.dsn.Dsn
 import io.sentry.event.Event
 import io.sentry.event.EventBuilder
-import io.sentry.event.interfaces.ExceptionInterface
 import io.sentry.event.interfaces.SentryException
 import java.awt.Component
 import java.util.*
@@ -49,10 +48,24 @@ internal class PdfErrorReportSubmitter : ErrorReportSubmitter() {
         val throwable = it.data.throwable
         SentryException(throwable, throwable.stackTrace)
       }
+//    return EventBuilder()
+//      .withLevel(Event.Level.ERROR)
+//      .withSentryInterface(ExceptionInterface(errors))
+
     return EventBuilder()
       .withLevel(Event.Level.ERROR)
-      .withSentryInterface(ExceptionInterface(errors))
+      .withSentryInterface(null)
   }
+
+
+
+
+
+
+
+
+
+
 
   private fun attachExtraInfo(event: EventBuilder) {
     with(event) {

@@ -1,0 +1,70 @@
+<idea-plugin xmlns:xi="http://www.w3.org/2001/XInclude" require-restart="true">
+  <id>com.github.wkkya.fusionpdf</id>
+  <name>FusionPDF</name>
+  <vendor email="wkkyahahaha@gmail.com"  url="https://github.com/wkkya/FusionPDF">
+    FusionPDF
+  </vendor>
+  <idea-version since-build="242" until-build="252.*" />
+
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends optional="true" config-file="texify-idea.xml">nl.rubensten.texifyidea</depends>
+<!--  <depends optional="true" config-file="cwm.xml">com.intellij.jetbrains.client</depends>-->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType name="PDF"
+              extensions="pdf"
+              language="PDF"
+              fieldName="INSTANCE"
+              implementationClass="com.firsttimeinforever.intellij.pdf.viewer.lang.PdfFileType"/>
+    <fileEditorProvider implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileEditorProvider"/>
+    <httpRequestHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.jcef.PdfStaticServer"/>
+
+    <registryKey defaultValue="false" key="pdf.viewer.debug" description="Enables PDF viewer debug mode"/>
+    <registryKey defaultValue="10000" key="pdf.viewer.jcefLatchTimeout" description="Sets maximum wait time for the web-view to load"/>
+    <registryKey defaultValue="false" key="pdf.viewer.enableExperimentalFeatures" description="Enables PDF viewer experimental features"/>
+    <registryKey defaultValue="true" key="pdf.viewer.use.jcef.osr.view" description="Enables JCEF off-screen rendering"/>
+
+    <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerSettings"/>
+
+    <applicationService serviceImplementation="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfPreviewStateService"/>
+
+    <postStartupActivity  implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.cache.PdfStartupActivity" />
+
+    <!--    设置-->
+<!--    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>-->
+<!--    <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>-->
+    <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
+                            implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
+
+    <fileDropHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.PdfFileDropHandler"/>
+
+    <toolWindow id="FusionPDF"
+                factoryClass="com.firsttimeinforever.intellij.pdf.viewer.ui.PdfToolWindowFactory"
+                anchor="bottom"
+                icon="/META-INF/pluginIcon.svg"
+    />
+
+
+  </extensions>
+
+  <applicationListeners>
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfStatusBarProjectManagerListener"
+              topic="com.intellij.openapi.project.ProjectManagerListener"/>
+
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerInvertColorsListener"
+              topic="com.intellij.openapi.editor.colors.EditorColorsListener"/>
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.editor.PdfFileOpenListener"
+              topic="com.intellij.openapi.fileEditor.FileEditorManagerListener"/>
+
+    <listener class="com.firsttimeinforever.intellij.pdf.viewer.ui.cache.PdfProjectCloseListener"
+              topic="com.intellij.ide.AppLifecycleListener"/>
+
+  </applicationListeners>
+
+
+  <xi:include href="/META-INF/actions.xml" xpointer="xpointer(/idea-plugin/*)"/>
+
+
+
+</idea-plugin>

@@ -56,18 +56,20 @@ class PdfSearchPanel(private val viewComponent: PdfEditorViewComponent): JPanel(
 
   private val findForwardAction = ActionManager.getInstance().getAction("pdf.viewer.FindForwardAction")!!
   private val findBackwardAction = ActionManager.getInstance().getAction("pdf.viewer.FindBackwardAction")!!
-  private val findForwardOnEnterAction = DumbAwareAction.create(findForwardAction::actionPerformed)
-//  private val findForwardOnEnterAction = DumbAwareAction.create { event ->
-//    ActionManager.getInstance().tryToExecute(
-//      findForwardAction, event.inputEvent, null, null, true
-//    )
-//  }
-  private val findBackwardOnShiftEnterAction = DumbAwareAction.create(findBackwardAction::actionPerformed)
-//  private val findBackwardOnShiftEnterAction = DumbAwareAction.create { event ->
-//    ActionManager.getInstance().tryToExecute(
-//      findBackwardAction, event.inputEvent, null, null, true
-//    )
-//  }
+//  private val findForwardOnEnterAction = DumbAwareAction.create(findForwardAction::actionPerformed)
+  private val findForwardOnEnterAction = DumbAwareAction.create { event ->
+    ActionManager.getInstance().tryToExecute(
+      findForwardAction, event.inputEvent, null, null, true
+    )
+  }
+
+
+//  private val findBackwardOnShiftEnterAction = DumbAwareAction.create(findBackwardAction::actionPerformed)
+  private val findBackwardOnShiftEnterAction = DumbAwareAction.create { event ->
+    ActionManager.getInstance().tryToExecute(
+      findBackwardAction, event.inputEvent, null, null, true
+    )
+  }
 
 
     init {

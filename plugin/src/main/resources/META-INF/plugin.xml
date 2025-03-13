@@ -33,7 +33,7 @@
 
     <!--    设置-->
 <!--    <applicationConfigurable instance="com.firsttimeinforever.intellij.pdf.viewer.settings.PdfViewerConfigurable" displayName="PDF Viewer"/>-->
-    <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>
+<!--    <errorHandler implementation="com.firsttimeinforever.intellij.pdf.viewer.report.PdfErrorReportSubmitter"/>-->
     <statusBarWidgetFactory id="PdfViewer.DocumentPageStatusBarWidget"
                             implementation="com.firsttimeinforever.intellij.pdf.viewer.ui.widgets.PdfDocumentPageStatusBarWidgetFactory"/>
 
