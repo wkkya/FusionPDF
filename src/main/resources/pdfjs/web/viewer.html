@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+    <!-- 引入 PDF.js -->
+    <script src="dist/build/pdf.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        #toolbar {
+            background: #f4f4f4;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #ccc;
+        }
+        #toolbar button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #toolbar input {
+            margin-left: 10px;
+        }
+        #viewer {
+            height: calc(100% - 50px);
+            overflow: auto;
+            background-color: #fff;
+        }
+        canvas {
+            display: block;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div id="toolbar">
+    <div>
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+        <span>Page: <span id="currentPage">1</span> / <span id="totalPages">0</span></span>
+    </div>
+    <div>
+        <button id="upload">Select PDF</button>
+        <input type="file" id="fileInput" accept="application/pdf" style="display: none;">
+    </div>
+</div>
+<div id="viewer"></div>
+
+<script>
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'dist/build/pdf.worker.js';
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let pageRendering = false;
+    let pageNumPending = null;
+    const viewer = document.getElementById('viewer');
+
+    // 渲染指定页
+    const renderPage = (num) => {
+        pageRendering = true;
+
+        pdfDoc.getPage(num).then((page) => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const viewport = page.getViewport({ scale: 1.5 });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            // 渲染页面内容
+            const renderTask = page.render({
+                canvasContext: ctx,
+                viewport: viewport,
+            });
+
+            renderTask.promise.then(() => {
+                pageRendering = false;
+                if (pageNumPending !== null) {
+                    renderPage(pageNumPending);
+                    pageNumPending = null;
+                }
+            });
+
+            // 清空之前的 canvas，添加新 canvas
+            viewer.innerHTML = '';
+            viewer.appendChild(canvas);
+
+            // 更新页码
+            document.getElementById('currentPage').textContent = pageNum;
+        });
+    };
+
+    // 排队渲染页面
+    const queueRenderPage = (num) => {
+        if (pageRendering) {
+            pageNumPending = num;
+        } else {
+            renderPage(num);
+        }
+    };
+
+    // 上一页
+    const onPrevPage = () => {
+        if (pageNum <= 1) {
+            return;
+        }
+        pageNum--;
+        queueRenderPage(pageNum);
+    };
+
+    // 下一页
+    const onNextPage = () => {
+        if (pageNum >= pdfDoc.numPages) {
+            return;
+        }
+        pageNum++;
+        queueRenderPage(pageNum);
+    };
+
+    // 事件绑定
+    document.getElementById('prev').addEventListener('click', onPrevPage);
+    document.getElementById('next').addEventListener('click', onNextPage);
+
+    // 加载本地文件
+    document.getElementById('upload').addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const fileReader = new FileReader();
+            fileReader.onload = function () {
+                const pdfData = new Uint8Array(this.result);
+                pdfjsLib.getDocument(pdfData).promise.then((pdf) => {
+                    pdfDoc = pdf;
+                    document.getElementById('totalPages').textContent = pdf.numPages;
+                    pageNum = 1; // 重置页码
+                    renderPage(pageNum);
+                });
+            };
+            fileReader.readAsArrayBuffer(file);
+        }
+    });
+
+    // 加载插件提供的 PDF URL
+    function loadPDF(url) {
+        pdfjsLib.getDocument(url).promise.then((pdf) => {
+            pdfDoc = pdf;
+            document.getElementById('totalPages').textContent = pdf.numPages;
+            pageNum = 1; // 重置页码
+            renderPage(pageNum);
+        });
+    }
+
+    // IntelliJ 调用入口
+    if (window.intellij) {
+        window.intellij.onLoadPDF = (url) => {
+            loadPDF(url);
+        };
+    }
+</script>
+</body>
+</html>

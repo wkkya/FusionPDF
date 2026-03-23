@@ -1,0 +1,114 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.jetbrains.intellij' version '1.17.0'
+    id 'de.undercouch.download' version '5.6.0'
+}
+
+def pdfjsVersion = "4.6.82"
+group = providers.gradleProperty("pluginGroup").get()
+version = providers.gradleProperty("pluginVersion").get()
+
+repositories {
+    mavenCentral()
+}
+
+intellij {
+    version = providers.gradleProperty("platformVersion").get()
+    type = providers.gradleProperty("platformType").get()
+    plugins = ['com.intellij.java'] // 如果需要其他插件模块，可以在这里添加
+    updateSinceUntilBuild = false // 确保插件兼容性设置正确
+}
+
+
+dependencies {
+//    implementation 'com.intellij:intellij-core:2023.3' // 注意选择与你的IDEA版本匹配的依赖
+//    implementation 'com.intellij:intellij-ui-designer-extensions:2023.3' // 注意选择与你的IDEA版本匹配的依
+
+
+}
+
+
+tasks.withType(JavaCompile) {
+    options.encoding = providers.gradleProperty("optionsEncoding").get()
+}
+
+tasks.register('downloadZipFile', de.undercouch.gradle.tasks.download.Download) {
+    def destFile = file("$projectDir/dist/pdfjs-$pdfjsVersion-dist.zip")
+    src("https://github.com/mozilla/pdf.js/releases/download/v$pdfjsVersion/pdfjs-$pdfjsVersion-dist.zip")
+    dest(destFile)
+    tempAndMove = true
+    onlyIf { !destFile.exists() || destFile.length() == 0 }
+}
+
+tasks.register('downloadAndUnzipFile', Copy) {
+    dependsOn 'downloadZipFile'
+    from zipTree(file("$projectDir/dist/pdfjs-$pdfjsVersion-dist.zip")) {
+        exclude '**/*.pdf'
+        exclude '**/*.js.map'
+        exclude '**/*.mjs.map'
+    }
+    into "$buildDir/web"
+
+    doLast {
+        def viewerHtml = file("$buildDir/web/viewer.html")
+        if (viewerHtml.exists()) {
+            def modifiedContent = viewerHtml.text
+                    .replaceAll(/(<link rel="stylesheet" href="viewer.css">/, '$1<link rel="stylesheet" href="../fixes.css">')
+                    .replaceAll(/(<script src="viewer.m?js"[^<>]*></script>)/, '$1<script src="../viewer.js"></script>')
+            viewerHtml.text = modifiedContent
+        }
+
+        def tmpdir = file("$buildDir/tmp")
+        if (tmpdir.exists()) {
+            tmpdir.deleteDir()
+        }
+    }
+}
+
+tasks.register('buildWebView', Copy) {
+    dependsOn 'downloadAndUnzipFile'
+    from 'src' {
+        include '*.css'
+    }
+    into "$buildDir/web"
+}
+
+
+
+
+runIde {
+    // 配置 JBR 版本
+    jbrVariant = providers.gradleProperty("jbrVariant").get() // 强制使用 JCEF 版本
+    // 配置 JVM 参数
+    jvmArgs = [
+            "-Djcef.enabled=true",
+            "-Dide.browser.jcef.enabled=true",
+            "-Dide.browser.jcef.sandbox.enable=false",
+            "--add-exports", "java.base/jdk.internal.vm=ALL-UNNAMED",
+            "-Xmx4096m", "-Xms128m"
+    ]
+    systemProperties = [
+            "idea.log.path": file(providers.gradleProperty("ideaLogPath").get()).absolutePath,
+            "ide.browser.jcef.enabled": "true"
+    ]
+}
+
+// 确保所有依赖项被打包到插件 jar 中
+jar {
+    manifest {
+        attributes(
+                'Plugin-Version': '1.0.0',
+                'Plugin-Id': 'FusionPDF',
+                'Plugin-Name': 'FusionPDF',
+                'Plugin-Description': 'FusionPDF',
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy = 'exclude' // 或者 'warn'
+}
+
+// 使用 org.jetbrains.intellij 插件自带的 buildPlugin 任务
+assemble.dependsOn(buildPlugin)
